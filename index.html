@@ -26,7 +26,7 @@
         /* Package Items */
         .pkg-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         
-        /* Payment UI (As per Image) */
+        /* Payment UI */
         .pay-box { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
         .step-num { background: #1a73e8; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-right: 10px; font-weight: bold; }
         .method-grid { display: flex; gap: 10px; margin-top: 15px; }
@@ -35,6 +35,14 @@
         .method img { width: 100%; height: 40px; object-fit: contain; }
         .info-bar { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 13px; border: 1px solid #eee; }
         .pay-now-btn { width: 100%; background: #0d47a1; color: white; border: none; padding: 16px; border-radius: 8px; margin-top: 15px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        /* Modal Styles (Login & Register) */
+        #auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; }
+        .auth-content { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; position: relative; }
+        .close-auth { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #666; }
+        .auth-content h2 { margin-top: 0; color: #0d47a1; text-align: center; }
+        .auth-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .auth-submit { width: 100%; background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
         /* Latest Orders */
         .order-card { background: white; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #eee; }
@@ -51,7 +59,7 @@
     <div id="home-view">
         <div class="header">
             <div class="logo">💎 RAFI <span>Game Shop</span></div>
-            <button class="login-btn" style="background:#1a73e8; color:white; border:none; padding:8px 15px; border-radius:5px;">Login</button>
+            <button class="login-btn" onclick="openAuth('login')" style="background:#1a73e8; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Login</button>
         </div>
         
         <div class="container">
@@ -73,6 +81,27 @@
                 <h4>Contact Us</h4>
                 <p><i class="fab fa-whatsapp" style="color:#25d366"></i> 01315976464</p>
             </div>
+        </div>
+    </div>
+
+    <div id="auth-modal">
+        <div class="auth-content" id="login-form">
+            <span class="close-auth" onclick="closeAuth()">&times;</span>
+            <h2>Member Login</h2>
+            <input type="text" id="login-phone" class="auth-input" placeholder="Phone Number">
+            <input type="password" id="login-pass" class="auth-input" placeholder="Password">
+            <button class="auth-submit" onclick="handleAuth('login')">LOGIN</button>
+            <p style="text-align:center; font-size:12px; color:#666; margin-top:15px;">Don't have an account? <span style="color:#1a73e8; cursor:pointer; font-weight:bold;" onclick="toggleAuth('register')">Register</span></p>
+        </div>
+
+        <div class="auth-content" id="register-form" style="display:none;">
+            <span class="close-auth" onclick="closeAuth()">&times;</span>
+            <h2>Register Account</h2>
+            <input type="text" id="reg-name" class="auth-input" placeholder="Full Name">
+            <input type="text" id="reg-phone" class="auth-input" placeholder="Phone Number">
+            <input type="password" id="reg-pass" class="auth-input" placeholder="Create Password">
+            <button class="auth-submit" onclick="handleAuth('register')">REGISTER NOW</button>
+            <p style="text-align:center; font-size:12px; color:#666; margin-top:15px;">Already have an account? <span style="color:#1a73e8; cursor:pointer; font-weight:bold;" onclick="toggleAuth('login')">Login</span></p>
         </div>
     </div>
 
@@ -126,6 +155,44 @@
             'indo': { t:'Indonesia Topup', p:[{n:'100 Diamond', v:'105'}] }
         };
 
+        // Auth Functions
+        function openAuth(mode) {
+            document.getElementById('auth-modal').style.display = 'flex';
+            toggleAuth(mode);
+        }
+        function closeAuth() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+        function toggleAuth(mode) {
+            if(mode === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('register-form').style.display = 'none';
+            } else {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('register-form').style.display = 'block';
+            }
+        }
+        function handleAuth(mode) {
+            if(mode === 'login') {
+                const phone = document.getElementById('login-phone').value;
+                const pass = document.getElementById('login-pass').value;
+                if(phone && pass) {
+                    alert("লগইন সফল হয়েছে!");
+                    closeAuth();
+                    document.querySelector('.login-btn').innerText = "Account";
+                } else { alert("তথ্য সঠিক দিন!"); }
+            } else {
+                const name = document.getElementById('reg-name').value;
+                const phone = document.getElementById('reg-phone').value;
+                const pass = document.getElementById('reg-pass').value;
+                if(name && phone && pass) {
+                    alert("রেজিস্ট্রেশন সফল! এখন লগইন করুন।");
+                    toggleAuth('login');
+                } else { alert("সবগুলো ঘর পূরণ করুন!"); }
+            }
+        }
+
+        // Package & Payment Functions
         function openPackageView(key) {
             const data = storeData[key];
             document.getElementById('pkg-view-title').innerText = data.t;
@@ -168,7 +235,7 @@
             window.open(`https://wa.me/8801315976464?text=নতুন অর্ডার\nID: ${id}\nPackage: ${document.getElementById('final-pkg-title').innerText}`);
         }
 
-        // 10 Orders
+        // Dummy Orders
         const names = ['porosh', 'Hiton', 'Rashed', 'Siam', 'Tanvir', 'Nabil', 'Abir', 'Sifat', 'Emon', 'Sakib'];
         let oHtml = '';
         names.forEach(n => {
