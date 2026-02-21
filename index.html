@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAFI Game Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f9; margin: 0; padding-bottom: 80px; }
+        .header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: bold; font-size: 20px; color: #1a73e8; }
+        
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        .section-title { text-align: center; font-size: 18px; font-weight: bold; color: #0d47a1; margin: 20px 0; text-transform: uppercase; }
+
+        /* Grid Items */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .product-card { background: white; border-radius: 12px; padding: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; cursor: pointer; }
+        .product-card img { width: 100%; border-radius: 10px; height: 120px; object-fit: cover; }
+        .product-name { font-size: 12px; font-weight: bold; margin-top: 8px; }
+
+        /* Full Screen Views */
+        .full-view { display: none; background: #f4f7f9; min-height: 100vh; position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; padding: 15px; box-sizing: border-box; overflow-y: auto; }
+        .back-btn { background: #fff; border: 1px solid #ddd; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+
+        /* Package Items */
+        .pkg-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        
+        /* Payment UI (As per Image) */
+        .pay-box { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
+        .step-num { background: #1a73e8; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-right: 10px; font-weight: bold; }
+        .method-grid { display: flex; gap: 10px; margin-top: 15px; }
+        .method { border: 2px solid #eee; border-radius: 10px; padding: 12px; text-align: center; flex: 1; cursor: pointer; }
+        .method.active { border-color: #1a73e8; background: #f0f7ff; }
+        .method img { width: 100%; height: 40px; object-fit: contain; }
+        .info-bar { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 13px; border: 1px solid #eee; }
+        .pay-now-btn { width: 100%; background: #0d47a1; color: white; border: none; padding: 16px; border-radius: 8px; margin-top: 15px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        /* Latest Orders */
+        .order-card { background: white; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid #eee; }
+        .status-done { background: #4caf50; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .nav-item { text-align: center; font-size: 12px; color: #333; cursor: pointer; flex: 1; }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; color: #0d47a1; }
+    </style>
+</head>
+<body>
+
+    <div id="home-view">
+        <div class="header">
+            <div class="logo">💎 RAFI <span>Game Shop</span></div>
+            <button class="login-btn" style="background:#1a73e8; color:white; border:none; padding:8px 15px; border-radius:5px;">Login</button>
+        </div>
+        
+        <div class="container">
+            <div class="section-title">FREE FIRE</div>
+            <div class="product-grid">
+                <div class="product-card" onclick="openPackageView('ff_bd')"><img src="https://i.ibb.co/jPQbxG4M/1000059801.jpg"><div class="product-name">FreeFire Topup [BD]</div></div>
+                <div class="product-card" onclick="openPackageView('weekly')"><img src="https://i.ibb.co/gLn5QrK0/1000059801.jpg"><div class="product-name">Weekly / Monthly</div></div>
+                <div class="product-card" onclick="openPackageView('levelup')"><img src="https://i.ibb.co/tp2tF4Ld/1000059801.jpg"><div class="product-name">Level Up Pass</div></div>
+                <div class="product-card" onclick="openPackageView('weekly_lite')"><img src="https://i.ibb.co/Kj0KcYdG/1000059801.jpg"><div class="product-name">Weekly Lite [BD]</div></div>
+                <div class="product-card" onclick="openPackageView('evo')"><img src="https://i.ibb.co/Zpst6tcT/1000059801.jpg"><div class="product-name">E badge Evo Access</div></div>
+                <div class="product-card" onclick="openPackageView('unipin')"><img src="https://i.ibb.co/99LcPjT9/1000059801.jpg"><div class="product-name">Unipin Voucher [BD]</div></div>
+                <div class="product-card" onclick="openPackageView('indo')"><img src="https://i.ibb.co/nq7gLpkM/1000059801.jpg"><div class="product-name">Indonesia Topup</div></div>
+            </div>
+
+            <h3 style="margin-top: 30px; text-align: center;">Latest Orders</h3>
+            <div id="orders-container"></div>
+
+            <div id="contact-us" style="background:white; padding:20px; text-align:center; border-radius:12px; margin-top:20px; border:1px solid #ddd;">
+                <h4>Contact Us</h4>
+                <p><i class="fab fa-whatsapp" style="color:#25d366"></i> 01315976464</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="pkg-view" class="full-view">
+        <button class="back-btn" onclick="closeAll()">← Back to Home</button>
+        <h3 id="pkg-view-title" style="color:#0d47a1;"></h3>
+        <div id="pkg-items-list"></div>
+    </div>
+
+    <div id="payment-view" class="full-view">
+        <button class="back-btn" onclick="backToPkg()">← Back</button>
+        <h3 id="final-pkg-title" style="color:#0d47a1; margin-bottom: 20px;"></h3>
+
+        <div class="pay-box">
+            <h4><span class="step-num">1</span> Account Info</h4>
+            <label style="font-size: 14px; color:#666;">Player Id</label>
+            <input type="number" id="player-id" placeholder="Enter player id" style="width:100%; padding:14px; margin-top:8px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+        </div>
+
+        <div class="pay-box">
+            <h4><span class="step-num">3</span> Select Payment</h4>
+            <div class="method-grid">
+                <div class="method" id="m-wallet" onclick="setMethod('wallet')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png"><br><b>Wallet</b>
+                </div>
+                <div class="method active" id="m-instant" onclick="setMethod('instant')">
+                    <img src="https://i.ibb.co/S6v43Vn/Instant-Pay.png"><br><b>Instant Pay</b>
+                </div>
+            </div>
+            <div class="info-bar"><span>ব্যালেন্স:</span> <b>৳ ০.০০</b></div>
+            <div class="info-bar"><span>প্রয়োজন:</span> <b id="final-cost">৳ ০.০০</b></div>
+            <button class="pay-now-btn" onclick="confirmOrder()">PAY NOW</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="location.reload()"><i class="fas fa-home"></i>Home</div>
+        <div class="nav-item"><i class="fas fa-play-circle"></i>Tutorial</div>
+        <div class="nav-item" onclick="closeAll()"><i class="fas fa-compass"></i>TopUp</div>
+        <div class="nav-item" onclick="document.getElementById('contact-us').scrollIntoView()"><i class="fas fa-headset"></i>Contact Us</div>
+    </div>
+
+    <script>
+        const storeData = {
+            'ff_bd': { t:'FreeFire Topup [BD]', p:[{n:'25 Diamond', v:'25'}, {n:'50 Diamond', v:'42'}, {n:'115 Diamond', v:'80'}] },
+            'weekly': { t:'Weekly / Monthly', p:[{n:'1x Weekly', v:'155'}, {n:'1x Monthly', v:'765'}] },
+            'levelup': { t:'Level Up Pass', p:[{n:'Level Up Pass', v:'190'}] },
+            'weekly_lite': { t:'Weekly Lite [BD]', p:[{n:'Weekly Lite', v:'45'}] },
+            'evo': { t:'E badge Evo Access', p:[{n:'Evo Access', v:'550'}] },
+            'unipin': { t:'Unipin Voucher [BD]', p:[{n:'100 Voucher', v:'115'}] },
+            'indo': { t:'Indonesia Topup', p:[{n:'100 Diamond', v:'105'}] }
+        };
+
+        function openPackageView(key) {
+            const data = storeData[key];
+            document.getElementById('pkg-view-title').innerText = data.t;
+            let html = '';
+            data.p.forEach(pkg => {
+                html += `<div class="pkg-item" onclick="openPaymentView('${pkg.n}', '${pkg.v}')"><span>${pkg.n}</span><b>৳${pkg.v}</b></div>`;
+            });
+            document.getElementById('pkg-items-list').innerHTML = html;
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('pkg-view').style.display = 'block';
+        }
+
+        function openPaymentView(name, price) {
+            document.getElementById('final-pkg-title').innerText = name;
+            document.getElementById('final-cost').innerText = `৳ ${price}.00`;
+            document.getElementById('pkg-view').style.display = 'none';
+            document.getElementById('payment-view').style.display = 'block';
+        }
+
+        function backToPkg() {
+            document.getElementById('payment-view').style.display = 'none';
+            document.getElementById('pkg-view').style.display = 'block';
+        }
+
+        function closeAll() {
+            document.getElementById('pkg-view').style.display = 'none';
+            document.getElementById('payment-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+        }
+
+        function setMethod(m) {
+            document.getElementById('m-wallet').classList.remove('active');
+            document.getElementById('m-instant').classList.remove('active');
+            document.getElementById(m === 'wallet' ? 'm-wallet' : 'm-instant').classList.add('active');
+        }
+
+        function confirmOrder() {
+            const id = document.getElementById('player-id').value;
+            if(!id) return alert("প্লেয়ার আইডি দিন!");
+            window.open(`https://wa.me/8801315976464?text=নতুন অর্ডার\nID: ${id}\nPackage: ${document.getElementById('final-pkg-title').innerText}`);
+        }
+
+        // 10 Orders
+        const names = ['porosh', 'Hiton', 'Rashed', 'Siam', 'Tanvir', 'Nabil', 'Abir', 'Sifat', 'Emon', 'Sakib'];
+        let oHtml = '';
+        names.forEach(n => {
+            oHtml += `<div class="order-card"><div><b>${n}</b><br><span style="font-size:12px;color:#666;">Diamond Success</span></div><div class="status-done">Completed</div></div>`;
+        });
+        document.getElementById('orders-container').innerHTML = oHtml;
+    </script>
+</body>
+</html>
